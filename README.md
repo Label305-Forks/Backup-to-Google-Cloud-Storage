@@ -31,16 +31,16 @@ Now we're set. You can use it manually:
 	
 But, we don't want to think about it until something breaks! So enter `crontab -e` and insert the following after editing the folders
 
-	# daily MySQL backup to S3 (not on first day of month or sundays)
+	# daily MySQL backup to Google Cloud (not on first day of month or sundays)
 	0 3 2-31 * 1-6 sh /home/youruser/mysqltogooglecloud.sh day
-	# weekly MySQL backup to S3 (on sundays, but not the first day of the month)
+	# weekly MySQL backup to Google Cloud (on sundays, but not the first day of the month)
 	0 3 2-31 * 0 sh /home/youruser/mysqltogooglecloud.sh week
-	# monthly MySQL backup to S3
+	# monthly MySQL backup to Google Cloud
 	0 3 1 * * sh /home/youruser/mysqltogooglecloud.sh month
 
 Or, if you'd prefer to have the script determine the current date and day of the week, insert the following after editing the folders
 
-	# automatic daily / weekly / monthly backup to S3.
+	# automatic daily / weekly / monthly backup to Google Cloud.
 	0 3 * * * sh /home/youruser/mysqltogooglecloud.sh auto
 
 And you're set.
