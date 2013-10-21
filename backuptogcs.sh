@@ -8,12 +8,12 @@ MYSQLPASS=
 GSBUCKET=bd-s1
 DBFN=mysql
 FILESFN=files
-FILESDIR='/usr/share/nginx/html/files'
+FILESDIR='/usr/share/nginx/html/app/webroot/uploads/files'
 IMAGESFN=images
-IMAGESDIR='/usr/share/nginx/html/images/raw'
+IMAGESDIR='/usr/share/nginx/html/app/webroot/uploads/images/raw'
 DATABASE='--all-databases'
 # the following line prefixes the backups with the defined directory. it must be blank or end with a /
-GSPATH=
+GSPATH=backup/
 # when running via cron, the PATHs MIGHT be different. If you have a custom/manual MYSQL install, you should set this manually like MYSQLDUMPPATH=/usr/local/mysql/bin/
 MYSQLDUMPPATH=
 # Change this if your gsutil is installed somewhere different.
@@ -46,15 +46,15 @@ ${MYSQLDUMPPATH}mysqldump --quick --user=${MYSQLROOT} --password=${MYSQLPASS} ${
 echo "Done backing up the database to a file."
 echo "Starting compression database file..."
 
-tar czf ${TMP_PATH}${DBFN}${DATESTAMP}.tar.gz ${TMP_PATH}${DBFN}.sql
+tar czfv ${TMP_PATH}${DBFN}${DATESTAMP}.tar.gz ${TMP_PATH}${DBFN}.sql
 
 echo "Starting compression data files..."
 
-tar czf ${TMP_PATH}${FILESFN}${DATESTAMP}.tar.gz ${FILESDIR}
+tar czfv ${TMP_PATH}${FILESFN}${DATESTAMP}.tar.gz ${FILESDIR}
 
 echo "Starting compression images files..."
 
-tar czf ${TMP_PATH}${IMAGESFN}${DATESTAMP}.tar.gz ${IMAGESDIR}
+tar czfv ${TMP_PATH}${IMAGESFN}${DATESTAMP}.tar.gz ${IMAGESDIR}
 
 echo "Done compressing the backup files."
 
@@ -80,5 +80,7 @@ echo "Removing the cache files..."
 # remove databases dump
 rm ${TMP_PATH}${DBFN}.sql
 rm ${TMP_PATH}${DBFN}${DATESTAMP}.tar.gz
+rm ${TMP_PATH}${FILESFN}${DATESTAMP}.tar.gz
+rm ${TMP_PATH}${IMAGESFN}${DATESTAMP}.tar.gz
 echo "Files removed."
 echo "All done."
