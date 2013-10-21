@@ -9,7 +9,7 @@ GSBUCKET=bd-s1
 DBFN=mysql
 FILESFN=files
 FILESDIR='/usr/share/nginx/html/files'
-IMAGESFN=files
+IMAGESFN=images
 IMAGESDIR='/usr/share/nginx/html/images/raw'
 DATABASE='--all-databases'
 # the following line prefixes the backups with the defined directory. it must be blank or end with a /
