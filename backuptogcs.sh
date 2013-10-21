@@ -1,5 +1,6 @@
 #!/bin/sh
 
+# Backup to Google Cloud Storage, default settings for GCE, CentOS, Nginx, PHP, CakePHP, Auja stack.
 # Under a MIT license
 
 # change these variables to what you need
@@ -27,7 +28,7 @@ DAYOFWEEK=$(date +"%A")
 
 PERIOD=${1-day}
 if [ ${PERIOD} = "auto" ]; then
-  if [ ${DAY} = "01" ]; then
+  if [ ${DAY} = "01"]; then 
           PERIOD=month
   elif [ ${DAYOFWEEK} = "Sunday" ]; then
           PERIOD=week
@@ -39,22 +40,20 @@ fi
 echo "Selected period: $PERIOD."
 
 echo "Starting backing up the database to a file..."
-
 # dump all databases
 ${MYSQLDUMPPATH}mysqldump --quick --user=${MYSQLROOT} --password=${MYSQLPASS} ${DATABASE} > ${TMP_PATH}${DBFN}.sql
-
 echo "Done backing up the database to a file."
-echo "Starting compression database file..."
 
+echo "Starting compression database file..."
 tar czfv ${TMP_PATH}${DBFN}${DATESTAMP}.tar.gz ${TMP_PATH}${DBFN}.sql
 
-echo "Starting compression data files..."
+if [ ${PERIOD} = "week" ] || [ ${PERIOD} = "month" ]; then
+  echo "Starting compression data files..."
+  tar czfv ${TMP_PATH}${FILESFN}${DATESTAMP}.tar.gz ${FILESDIR}
 
-tar czfv ${TMP_PATH}${FILESFN}${DATESTAMP}.tar.gz ${FILESDIR}
-
-echo "Starting compression images files..."
-
-tar czfv ${TMP_PATH}${IMAGESFN}${DATESTAMP}.tar.gz ${IMAGESDIR}
+  echo "Starting compression images files..."
+  tar czfv ${TMP_PATH}${IMAGESFN}${DATESTAMP}.tar.gz ${IMAGESDIR}
+fi
 
 echo "Done compressing the backup files."
 
@@ -70,17 +69,17 @@ echo "Past backup moved."
 # upload all databases
 echo "Uploading the database files..."
 ${GSUTILPATH}gsutil cp ${TMP_PATH}${DBFN}${DATESTAMP}.tar.gz gs://${GSBUCKET}/${GSPATH}${PERIOD}/
-echo "Uploading the data files..."
-${GSUTILPATH}gsutil cp ${TMP_PATH}${FILESFN}${DATESTAMP}.tar.gz gs://${GSBUCKET}/${GSPATH}${PERIOD}/
-echo "Uploading the image files..."
-${GSUTILPATH}gsutil cp ${TMP_PATH}${IMAGESFN}${DATESTAMP}.tar.gz gs://${GSBUCKET}/${GSPATH}${PERIOD}/
-echo "New backup uploaded."
-
-echo "Removing the cache files..."
-# remove databases dump
 rm ${TMP_PATH}${DBFN}.sql
 rm ${TMP_PATH}${DBFN}${DATESTAMP}.tar.gz
-rm ${TMP_PATH}${FILESFN}${DATESTAMP}.tar.gz
-rm ${TMP_PATH}${IMAGESFN}${DATESTAMP}.tar.gz
-echo "Files removed."
-echo "All done."
+
+if [ ${PERIOD} = "week" ] || [ ${PERIOD} = "month" ]; then
+  echo "Uploading the data files..."
+  ${GSUTILPATH}gsutil cp ${TMP_PATH}${FILESFN}${DATESTAMP}.tar.gz gs://${GSBUCKET}/${GSPATH}${PERIOD}/
+  rm ${TMP_PATH}${FILESFN}${DATESTAMP}.tar.gz
+
+  echo "Uploading the image files..."
+  ${GSUTILPATH}gsutil cp ${TMP_PATH}${IMAGESFN}${DATESTAMP}.tar.gz gs://${GSBUCKET}/${GSPATH}${PERIOD}/
+  rm ${TMP_PATH}${IMAGESFN}${DATESTAMP}.tar.gz
+fi
+
+echo "Finished, new backup uploaded and cache files removed."
