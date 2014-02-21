@@ -26,24 +26,24 @@ Now we're set. You can use it manually:
 	sh /home/youruser/backuptogcs.sh
 	
 	#set a new weekly backup, and store previous week as "previous_week"
-	/home/youruser/backuptogcs.sh week
+	sh /home/youruser/backuptogcs.sh week
 	
 	#set a new weekly backup, and store previous month as "previous_month"
-	/home/youruser/backuptogcs.sh month
+	sh /home/youruser/backuptogcs.sh month
 	
 But, we don't want to think about it until something breaks! So enter `crontab -e` and insert the following after editing the folders
 
 	# daily MySQL backup to Google Cloud (not on first day of month or sundays)
-	0 3 2-31 * 1-6 sh /home/youruser/backuptogcs.sh day
+	0 3 2-31 * 1-6 root sh /home/youruser/backuptogcs.sh day
 	# weekly MySQL backup to Google Cloud (on sundays, but not the first day of the month)
-	0 3 2-31 * 0 sh /home/youruser/backuptogcs.sh week
+	0 3 2-31 * 0 root sh /home/youruser/backuptogcs.sh week
 	# monthly MySQL backup to Google Cloud
-	0 3 1 * * sh /home/youruser/backuptogcs.sh month
+	0 3 1 * * root sh /home/youruser/backuptogcs.sh month
 
 Or, if you'd prefer to have the script determine the current date and day of the week, insert the following after editing the folders
 
 	# automatic daily / weekly / monthly backup to Google Cloud.
-	0 3 * * * sh /home/youruser/backuptogcs.sh auto
+	0 3 * * * root sh /home/youruser/backuptogcs.sh auto
 
 And you're set.
 
