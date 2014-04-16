@@ -1,4 +1,4 @@
-tscheepers / Backup-to-Google-Cloud-Storage
+Backup to Google Cloud Storage
 =================================
 This is adapted code from: [https://github.com/woxxy/MySQL-backup-to-Amazon-S3](https://github.com/woxxy/MySQL-backup-to-Amazon-S3) and from: [https://github.com/mvarrieur/MySQL-backup-to-Google-Cloud-Storage](https://github.com/mvarrieur/MySQL-backup-to-Google-Cloud-Storage)
 
